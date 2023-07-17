@@ -1,0 +1,104 @@
+'use strict';
+
+const PORT = 3000;
+
+// The variable stocks has the same value as the variable stocks in the file 'stocks.js'
+const stocks = require('./stocks.js').stocks;
+
+const express = require("express");
+const app = express();
+
+
+app.use(express.urlencoded({
+    extended: true
+}));
+
+app.use(express.static('public'));
+// Note: Don't add or change anything above this line.
+
+
+// Stock Order 
+function findStockBySymbol(symbol) {
+    for (let i = 0; i < stocks.length; i++) {
+      if (stocks[i].symbol === symbol) {
+        return stocks[i];
+      }
+    }
+    return null;
+  }
+
+
+app.post("/order", (req, res) => {
+    const symbol = req.body.symbol;
+    const quantity = req.body.quantity;
+
+    const selectedStock = findStockBySymbol(symbol);
+    const totalPrice = selectedStock.price * quantity;
+
+    res.send(`Ordered ${quantity} shares of ${symbol} -- Pruchase Total: ${totalPrice}`);
+  });
+
+
+  function findHighPrice() {
+    let highestStock = [0];
+    let highestPrice = 0;
+  
+    for (let i = 0; i < stocks.length; i++) {
+      if (stocks[i].price > highestPrice) {
+        highestStock = stocks[i];
+        highestPrice = stocks[i].price;
+      }
+    }
+  
+    return highestStock;
+  }
+
+  function findLowPrice() {
+    let lowestStock = stocks[0];
+    let lowestPrice = lowestStock.price;
+  
+    for (let i = 1; i < stocks.length; i++) {
+      if (stocks[i].price < lowestPrice) {
+        lowestStock = stocks[i];
+        lowestPrice = stocks[i].price;
+      }
+    }
+  
+    return lowestStock;
+  }
+
+  
+  
+  app.post("/search", (req, res) => {
+    const searchType = req.body.search;
+    let result;
+  
+    if (searchType === "highest-price") {
+      const highestStock = findHighPrice();
+      result = {
+        company: highestStock.company,
+        symbol: highestStock.symbol
+      };
+    } else if (searchType === "lowest-price") {
+      const lowestStock = findLowPrice();
+      result = {
+        company: lowestStock.company,
+        symbol: lowestStock.symbol
+      };
+    } else {
+      result = { error: "Invalid search type" };
+    }
+  
+    res.send(result);
+  });
+
+
+
+
+
+
+
+// Note: Don't add or change anything below this line.
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}...`);
+});

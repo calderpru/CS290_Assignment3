@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Stock Search</title>
+</head>
+
+<body>
+    <h1>Stock Search</h1>
+    <form action="/search" method="POST">
+        <label for="search">Search Stocks by:</label>
+        <br>
+        <input type="radio" id="highest-price" name="search" value="highest-price">
+        <label for="highest-price">Highest Price</label>
+        <br>
+        <input type="radio" id="lowest-price" name="search" value="lowest-price">
+        <label for="lowest-price">Lowest Price</label>
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+
+</html>
